@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "🚀 Launch LifeSync AI",
+      "file": "${workspaceFolder}/index.html",
+      "webRoot": "${workspaceFolder}",
+      "runtimeArgs": ["--disable-web-security"],
+      "userDataDir": "${workspaceFolder}/.vscode-chrome"
+    },
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "🚀 Launch LifeSync AI (Edge)",
+      "file": "${workspaceFolder}/index.html",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
+}

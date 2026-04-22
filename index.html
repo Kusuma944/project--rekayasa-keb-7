@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeSync AI – To-Do List</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">LifeSync<em>AI</em></span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">‹</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-filter="all">
+        <span class="nav-icon">◉</span>
+        <span class="nav-label">Semua Task</span>
+        <span class="nav-badge" id="badge-all">0</span>
+      </button>
+      <button class="nav-item" data-filter="today">
+        <span class="nav-icon">◎</span>
+        <span class="nav-label">Hari Ini</span>
+        <span class="nav-badge" id="badge-today">0</span>
+      </button>
+      <button class="nav-item" data-filter="pending">
+        <span class="nav-icon">○</span>
+        <span class="nav-label">Belum Selesai</span>
+        <span class="nav-badge" id="badge-pending">0</span>
+      </button>
+      <button class="nav-item" data-filter="done">
+        <span class="nav-icon">●</span>
+        <span class="nav-label">Selesai</span>
+        <span class="nav-badge" id="badge-done">0</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-section-title">Life Areas</div>
+    <nav class="sidebar-nav">
+      <button class="nav-item" data-filter="area-karir">
+        <span class="nav-icon area-karir">▣</span>
+        <span class="nav-label">Karir</span>
+      </button>
+      <button class="nav-item" data-filter="area-kesehatan">
+        <span class="nav-icon area-kesehatan">▣</span>
+        <span class="nav-label">Kesehatan</span>
+      </button>
+      <button class="nav-item" data-filter="area-belajar">
+        <span class="nav-icon area-belajar">▣</span>
+        <span class="nav-label">Belajar</span>
+      </button>
+      <button class="nav-item" data-filter="area-personal">
+        <span class="nav-icon area-personal">▣</span>
+        <span class="nav-label">Personal</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="progress-ring-wrap">
+        <svg class="progress-ring" width="56" height="56" viewBox="0 0 56 56">
+          <circle cx="28" cy="28" r="22" stroke="var(--ring-bg)" stroke-width="4" fill="none"/>
+          <circle cx="28" cy="28" r="22" stroke="var(--accent)" stroke-width="4" fill="none"
+            stroke-dasharray="138.2" stroke-dashoffset="138.2"
+            stroke-linecap="round" id="progressCircle" transform="rotate(-90 28 28)"/>
+        </svg>
+        <span class="progress-pct" id="progressPct">0%</span>
+      </div>
+      <div class="progress-info">
+        <div class="progress-label">Progress Hari Ini</div>
+        <div class="progress-sub" id="progressSub">0 dari 0 selesai</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main" id="main">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        <div>
+          <h1 class="page-title" id="pageTitle">Semua Task</h1>
+          <p class="page-date" id="pageDate"></p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-icon" id="themeToggle" title="Toggle Theme">◑</button>
+        <button class="btn-icon" id="sortBtn" title="Urutkan">⇅</button>
+        <button class="btn-primary" id="openAddModal">+ Tambah Task</button>
+      </div>
+    </header>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-lbl">Total Task</div>
+      </div>
+      <div class="stat-card accent">
+        <div class="stat-num" id="statPending">0</div>
+        <div class="stat-lbl">Belum Selesai</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-num" id="statDone">0</div>
+        <div class="stat-lbl">Selesai</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-num" id="statOverdue">0</div>
+        <div class="stat-lbl">Terlambat</div>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" placeholder="Cari task..." />
+      <button class="clear-search" id="clearSearch" title="Hapus pencarian">✕</button>
+    </div>
+
+    <!-- Task List -->
+    <div class="task-section">
+      <div class="task-list" id="taskList">
+        <!-- Tasks will be injected here -->
+      </div>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">◌</div>
+        <div class="empty-text">Belum ada task di sini</div>
+        <div class="empty-sub">Tambahkan task baru dengan tombol "+ Tambah Task"</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===== MODAL ADD/EDIT ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Tambah Task Baru</h2>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId" />
+
+        <div class="form-group">
+          <label class="form-label">Judul Task <span class="required">*</span></label>
+          <input type="text" class="form-input" id="taskTitle" placeholder="Contoh: Belajar React hooks..." />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Deskripsi</label>
+          <textarea class="form-textarea" id="taskDesc" rows="3" placeholder="Detail tambahan tentang task ini..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Prioritas</label>
+            <select class="form-select" id="taskPriority">
+              <option value="low">🟢 Rendah</option>
+              <option value="medium" selected>🟡 Sedang</option>
+              <option value="high">🔴 Tinggi</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Life Area</label>
+            <select class="form-select" id="taskArea">
+              <option value="karir">💼 Karir</option>
+              <option value="kesehatan">💪 Kesehatan</option>
+              <option value="belajar">📚 Belajar</option>
+              <option value="personal">🌿 Personal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Deadline</label>
+            <input type="date" class="form-input" id="taskDeadline" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Waktu</label>
+            <input type="time" class="form-input" id="taskTime" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="modalCancel">Batal</button>
+        <button class="btn-primary" id="modalSave">Simpan Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ===== DELETE CONFIRM ===== -->
+  <div class="modal-overlay" id="deleteOverlay">
+    <div class="modal confirm-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Hapus Task?</h2>
+        <button class="modal-close" id="deleteClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">Yakin ingin menghapus task <strong id="deleteTaskName"></strong>? Tindakan ini tidak dapat dibatalkan.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="deleteCancelBtn">Batal</button>
+        <button class="btn-danger" id="deleteConfirmBtn">Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
